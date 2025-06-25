@@ -20,4 +20,359 @@ This project aims to identify the key factors contributing to the **increasing r
 5. **Seaborn**: Used for statistical data visualization.
 6. **Git & GitHub**: for sharing my analysis and insights.
 
-### **Data Cleaning and Formatting:**
+## **(4) Data Inspection:**
+### **4.1. Import Important Libraries and Modules:**
+```py
+import pandas as pd
+import numpy as np 
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import seaborn as sns
+import datetime as dt
+```
+
+## **4.2. Export Target Dataframe:**
+```py
+df = pd.read_csv('D:\\IT Courses\\Data Analysis Courses\\Data Analysis Projects\\Hotels Exploratory Data Analysis (EDA) Project\\Hotels_Exploratory_Data_Analysis_EDA_Project\\Dataset\\hotels.csv')
+```
+
+## **(5) Data Cleaning and Formatting:**
+### **5.1. Dealing With Nan Values:**
+
+**5.1.1. Drop Columns ('agent', 'company'):**
+```py
+df_copy.drop(
+    ['agent', 'company'],
+    axis=1,
+    inplace=True
+)
+```
+
+**5.1.2. Drop Nan Values Of Columns ('country', 'children'):**
+```py
+df_copy.dropna(
+    subset=('country', 'children'),
+    axis=0,
+    inplace=True
+)
+```
+### **5.2. Type Casting of Column (reservation_status_date) to Datetime:**
+```py
+df_copy['reservation_status_date'] = pd.to_datetime(df_copy['reservation_status_date'])
+# 118898 non-null  datetime64[ns]
+```
+### **5.3. Data Normalization and Standardization:**
+**5.2.1. Data Normalization of Column (meal):**
+
+**Based on common hotel meal abbreviations, here are the likely full names for each abbreviation in the column:** 
+
+- **BB**: Bed and Breakfast
+- **FB**: Full Board (typically includes breakfast, lunch, and dinner)
+- **HB**: Half Board (typically includes breakfast and dinner)
+- **SC**: Self Catering
+- **Undefined**: Undefined (no specific meal plan specified)
+```py
+meal_column_dictionary = {
+    'BB':'Bed & Breakfast',
+    'FB':'Full Board',
+    'HB':'Half Board',
+    'SC':'Self Catering',
+    'Undefined':'Undefined'
+}
+```
+```py
+def meal_normalization(meal_column):
+    for key, value in meal_column_dictionary.items():
+        if key.upper() == meal_column.upper():
+            return(value)
+    else:
+        return(meal_column)
+
+df_copy['meal'] = df_copy['meal'].apply(meal_normalization)
+```
+
+**5.2.2. Data Normalization of Column (country):**
+```py
+country_codes_to_names = {
+    'PRT': 'Portugal',
+    'GBR': 'United Kingdom',
+    'USA': 'United States',
+    'ESP': 'Spain',
+    'IRL': 'Ireland',
+    'FRA': 'France',
+    'ROU': 'Romania',
+    'NOR': 'Norway',
+    'OMN': 'Oman',
+    'ARG': 'Argentina',
+    'POL': 'Poland',
+    'DEU': 'Germany',
+    'BEL': 'Belgium',
+    'CHE': 'Switzerland',
+    'CN': 'China', 
+    'GRC': 'Greece',
+    'ITA': 'Italy',
+    'Unknown' : 'Not Disclose',
+    'NLD': 'Netherlands',
+    'DNK': 'Denmark',
+    'RUS': 'Russia',
+    'SWE': 'Sweden',
+    'AUS': 'Australia',
+    'EST': 'Estonia',
+    'CZE': 'Czech Republic',
+    'BRA': 'Brazil',
+    'FIN': 'Finland',
+    'MOZ': 'Mozambique',
+    'BWA': 'Botswana',
+    'LUX': 'Luxembourg',
+    'SVN': 'Slovenia',
+    'ALB': 'Albania',
+    'IND': 'India',
+    'CHN': 'China',
+    'MEX': 'Mexico',
+    'MAR': 'Morocco',
+    'UKR': 'Ukraine',
+    'SMR': 'San Marino',
+    'LVA': 'Latvia',
+    'PRI': 'Puerto Rico',
+    'SRB': 'Serbia',
+    'CHL': 'Chile',
+    'AUT': 'Austria',
+    'BLR': 'Belarus',
+    'LTU': 'Lithuania',
+    'TUR': 'Turkey',
+    'ZAF': 'South Africa',
+    'AGO': 'Angola',
+    'CYM': 'Cayman Islands',
+    'ZMB': 'Zambia',
+    'CPV': 'Cabo Verde',
+    'ZWE': 'Zimbabwe',
+    'DZA': 'Algeria',
+    'KOR': 'South Korea',
+    'CRI': 'Costa Rica',
+    'HUN': 'Hungary',
+    'ARE': 'United Arab Emirates',
+    'TUN': 'Tunisia',
+    'JAM': 'Jamaica',
+    'HRV': 'Croatia',
+    'HKG': 'Hong Kong',
+    'IRN': 'Iran',
+    'GEO': 'Georgia',
+    'AND': 'Andorra',
+    'GIB': 'Gibraltar',
+    'URY': 'Uruguay',
+    'JEY': 'Jersey',
+    'CAF': 'Central African Republic',
+    'CYP': 'Cyprus',
+    'COL': 'Colombia',
+    'GGY': 'Guernsey',
+    'KWT': 'Kuwait',
+    'NGA': 'Nigeria',
+    'MDV': 'Maldives',
+    'VEN': 'Venezuela',
+    'SVK': 'Slovakia',
+    'FJI': 'Fiji',
+    'KAZ': 'Kazakhstan',
+    'PAK': 'Pakistan',
+    'IDN': 'Indonesia',
+    'LBN': 'Lebanon',
+    'PHL': 'Philippines',
+    'SEN': 'Senegal',
+    'SYC': 'Seychelles',
+    'AZE': 'Azerbaijan',
+    'BHR': 'Bahrain',
+    'NZL': 'New Zealand',
+    'THA': 'Thailand',
+    'DOM': 'Dominican Republic',
+    'MKD': 'North Macedonia',
+    'MYS': 'Malaysia',
+    'ARM': 'Armenia',
+    'JPN': 'Japan',
+    'LKA': 'Sri Lanka',
+    'CUB': 'Cuba',
+    'CMR': 'Cameroon',
+    'BIH': 'Bosnia and Herzegovina',
+    'MUS': 'Mauritius',
+    'COM': 'Comoros',
+    'SUR': 'Suriname',
+    'UGA': 'Uganda',
+    'BGR': 'Bulgaria',
+    'CIV': "Cote d'Ivoire",
+    'JOR': 'Jordan',
+    'SYR': 'Syria',
+    'SGP': 'Singapore',
+    'BDI': 'Burundi',
+    'SAU': 'Saudi Arabia',
+    'VNM': 'Vietnam',
+    'PLW': 'Palau',
+    'QAT': 'Qatar',
+    'EGY': 'Egypt',
+    'PER': 'Peru',
+    'MLT': 'Malta',
+    'MWI': 'Malawi',
+    'ECU': 'Ecuador',
+    'MDG': 'Madagascar',
+    'ISL': 'Iceland',
+    'UZB': 'Uzbekistan',
+    'NPL': 'Nepal',
+    'BHS': 'Bahamas',
+    'MAC': 'Macau',
+    'TGO': 'Togo',
+    'TWN': 'Taiwan',
+    'DJI': 'Djibouti',
+    'STP': 'Sao Tome and Principe',
+    'KNA': 'Saint Kitts and Nevis',
+    'ETH': 'Ethiopia',
+    'IRQ': 'Iraq',
+    'HND': 'Honduras',
+    'RWA': 'Rwanda',
+    'KHM': 'Cambodia',
+    'MCO': 'Monaco',
+    'BGD': 'Bangladesh',
+    'IMN': 'Isle of Man',
+    'TJK': 'Tajikistan',
+    'NIC': 'Nicaragua',
+    'BEN': 'Benin',
+    'VGB': 'British Virgin Islands',
+    'TZA': 'Tanzania',
+    'GAB': 'Gabon',
+    'GHA': 'Ghana',
+    'TMP': 'East Timor',
+    'GLP': 'Guadeloupe',
+    'KEN': 'Kenya',
+    'LIE': 'Liechtenstein',
+    'GNB': 'Guinea-Bissau',
+    'MNE': 'Montenegro',
+    'UMI': 'United States Minor Outlying Islands',
+    'MYT': 'Mayotte',
+    'FRO': 'Faroe Islands',
+    'MMR': 'Myanmar',
+    'PAN': 'Panama',
+    'BFA': 'Burkina Faso',
+    'LBY': 'Libya',
+    'MLI': 'Mali',
+    'NAM': 'Namibia',
+    'BOL': 'Bolivia',
+    'PRY': 'Paraguay',
+    'BRB': 'Barbados',
+    'ABW': 'Aruba',
+    'AIA': 'Anguilla',
+    'SLV': 'El Salvador',
+    'DMA': 'Dominica',
+    'PYF': 'French Polynesia',
+    'GUY': 'Guyana',
+    'LCA': 'Saint Lucia',
+    'ATA': 'Antarctica',
+    'GTM': 'Guatemala',
+    'ASM': 'American Samoa',
+    'MRT': 'Mauritania',
+    'NCL': 'New Caledonia',
+    'KIR': 'Kiribati',
+    'SDN': 'Sudan',
+    'ATF': 'French Southern Territories',
+    'SLE': 'Sierra Leone',
+    'LAO': 'Laos'
+}
+```
+```py
+def country_normalization(country_column):
+    for key, value in country_codes_to_names.items():
+        if key.upper() == country_column.upper():
+            return(value)
+    else:
+        return(country_column)
+
+df_copy['country'] = df_copy['country'].apply(country_normalization)
+```
+**5.2.3. Dta Normalization of Column ('is_canceled')**
+```py
+is_canceled_dictionary = {
+    1 : 'Canceled',
+    0 : 'Not Canceled'
+}
+```
+```py
+def is_canceled_normalization(is_canceled_column):
+    for key, value in is_canceled_dictionary.items():
+        if key == is_canceled_column:
+            return(value)
+    else:
+        return(key)
+
+df_copy['is_canceled'] = df_copy['is_canceled'].apply(is_canceled_normalization)
+```
+### **5.4. Dealing With Ouliers In Column 'adr' Average Daily Rate:**
+**5.4.1. Dealing With Outliers In Column "adr" Average Daily Rate:**
+
+**(1) Five Number Summary Of Column 'adr':**
+```py
+adr_Q1 = np.quantile(df_copy['adr'], 0.25) # 70
+adr_Q2 = np.quantile(df_copy['adr'], 0.50) # 95.0
+adr_Q3 = np.quantile(df_copy['adr'], 0.75) # 126.0
+
+adr_min = np.min(df_copy['adr']) # -6.38
+adr_max = np.max(df_copy['adr']) # 5400.0
+
+adr_IQR = adr_Q3 - adr_Q1 # 56.0
+
+lower_boundry = adr_Q1 - (1.5 * adr_IQR) # -14.0
+upper_boundary = adr_Q3 + (1.5 * adr_IQR) # 210.0
+```
+**(2) "adr" Column Box Plot Visualization to Clearly Show the Variability of the "adr" column Values Before Dealing with Outliers:**
+```py
+plt.figure(figsize=(18,4))
+plt.boxplot(
+    x=df_copy['adr'],
+    vert=False
+)
+plt.title('Average Daily Rate Box Plot')
+plt.axvline(x=np.mean(df_copy['adr']), color='blue', linestyle='--', label='Mean')
+plt.axvline(x=np.quantile(df_copy['adr'], 0.25), color='orange', linestyle='--', label='Q1')
+plt.axvline(x=np.quantile(df_copy['adr'], 0.50), color='green', linestyle='--', label='Median')
+plt.axvline(x=np.quantile(df_copy['adr'], 0.75), color='yellow', linestyle='--', label='Q3')
+plt.legend(loc='upper right')
+plt.yticks([])
+plt.tight_layout()
+```
+![alt text](Figs/box_1.png)
+
+- **Action:** Delete values in the `adr` column that are above 5000.
+
+- **Reason:** These values have been identified as outliers and may skew the analysis or results. Removing these outliers will help ensure the accuracy and reliability of the data analysis.
+
+- **Impact:** This action will clean the dataset, potentially improving the performance of any models or analyses that rely on this dat
+
+```py
+df_copy = df_copy[df_copy['adr'] < 5000]
+```
+
+**(3) "adr" Column Box Plot Visualization to Clearly Show the Variability of the "adr" column Values After Dealing with Outliers:**
+
+```py
+plt.figure(figsize=(18,4))
+plt.boxplot(
+    x=df_copy['adr'],
+    vert=False
+)
+plt.title('Average Daily Rate Box Plot')
+plt.axvline(x=np.mean(df_copy['adr']), color='blue', linestyle='--', label='Mean')
+plt.axvline(x=np.quantile(df_copy['adr'], 0.25), color='orange', linestyle='--', label='Q1')
+plt.axvline(x=np.quantile(df_copy['adr'], 0.50), color='green', linestyle='--', label='Median')
+plt.axvline(x=np.quantile(df_copy['adr'], 0.75), color='yellow', linestyle='--', label='Q3')
+plt.legend(loc='upper right')
+plt.yticks([])
+plt.tight_layout()
+```
+![alt text](Figs/box_2.png)
+
+
+## **(6) Export Cleaned and Formatted Dataframe Into CSV File:**
+
+```py
+df_copy.to_csv(
+    'cleaned_formatted_hotels_df.csv',
+    index=False
+)
+```
+
+## **(7) :**
+
