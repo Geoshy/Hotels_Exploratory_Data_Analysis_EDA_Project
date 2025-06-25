@@ -8,9 +8,8 @@
 3. **Data Preparation:** Clean and explore the data using Python to ensure quality and consistency.
 4. **Data Analysis:** Extract insights to identify reasons behind the rise in hotel cancellation orders.
 
-
 ## **(2) Introduction:**
-This project aims to identify the key factors contributing to the **increasing rate of hotel booking cancellations**. We will explore primary reasons, such as **high average daily rates**, and secondary factors, including **discrepancies between online hotel photos and actual conditions**. Utilizing the **Python** programming language, we will begin with **data cleaning, manipulation, and normalization using the Pandas library to handle outliers and null values**. Following this, we will employ **data visualization tools like Matplotlib and Seaborn to create insightful plots**. Through detailed analysis of these visualizations, we will uncover the underlying reasons for the surge in hotel cancellation orders.
+This project aims to identify the key factors contributing to the **increasing rate of hotel booking cancellations**. We will explore primary reasons, such as **high average daily rates**, and secondary factors, including **discrepancies between online hotel photos and actual conditions**. Utilizing the **Python** programming language, we will begin with **data cleaning, manipulation, and normalization using the Pandas library to handle outliers and null values**. Our dataset comprises information from two distinct types of hotels: **city hotel and resort hotel**. Following this, we will employ **data visualization tools like Matplotlib and Seaborn to create insightful plots**. Through detailed analysis of these visualizations, we will uncover the underlying reasons for the surge in hotel cancellation orders.
 
 ## **(3) Tools I Used:**
 1. **Kaggle**: Source of the hotels dataset.
@@ -374,5 +373,105 @@ df_copy.to_csv(
 )
 ```
 
-## **(7) :**
+## **(7) Exploratory Data Analysis (EDA):**
+### **7.1. Hotels Reservation Status Anaysis:**
+```py
+plt.figure(figsize=(7,5))
+round(df['is_canceled'].value_counts(normalize=True) * 100).plot(
+    kind='bar',
+    color=['green', 'red'],
+    width=0.3,
+    alpha=0.8,
+    edgecolor='k'
+)
+plt.title('Hotels Reservation Status')
+plt.xticks(rotation=0)
+plt.xlabel('Reservation Status')
+plt.ylabel('Percent %')
+```
+![alt text](Figs/p1.png)
 
+**Key Insights:**
+
+- A significant insight from this plot is that a majority of the reservations are **not canceled**, indicating that most customers follow through with their hotel bookings. 
+
+- However, **there is still a notable proportion of cancellations, which suggests potential areas for improvement in understanding customer needs or addressing issues that lead to cancellations**. 
+
+### **7.2. Comparison of Reservation Statuses Between City and Resort Hotels:**
+
+```py
+fig, ax = plt.subplots(1,2, figsize=(15,5))
+
+hotels_labels = []
+for hotel in df['hotel'].value_counts().index:
+    hotels_labels.append(hotel)
+
+df['hotel'].value_counts().plot(
+    kind='bar',
+    color=['blue','orange'],
+    edgecolor='black',
+    width=0.3,
+    alpha=0.8,
+    ax=ax[0]
+)
+ax[0].set_title('Hotels Orders Frequency')
+ax[0].set_xlabel('Hotels')
+ax[0].set_ylabel('Orders Frequency')
+ax[0].set_xticklabels(hotels_labels, rotation=0)
+
+df.pivot_table(index='hotel', columns='is_canceled', aggfunc='size').plot(
+    kind='bar',
+    color=['red', 'green'],
+    edgecolor='black',
+    alpha=0.8,
+    ax=ax[1]
+)
+ax[1].legend(title='')
+ax[1].set_title('(Resort Hotel - City Hotel) Reservation Status')
+ax[1].set_xlabel('Hotels')
+ax[1].set_ylabel('Frequency')
+ax[1].set_xticklabels(hotels_labels, rotation=0)
+```
+![alt text](Figs/p2.png)
+
+**Key Insights:**
+- **City hotel** experience a **higher volume** of both cancellations and completed stays compared to resort hotels. 
+
+- On the other hand, **resort hotels, while having fewer overall bookings, show a relatively lower frequency of cancellations compared to city hotel**. 
+
+### **7.3. Time Series Analysis of Average Daily Rates for City and Resort Hotels:**
+```py
+adr_time_series = df.pivot_table(
+    index='reservation_status_date',
+    columns='hotel',
+    values='adr',
+    aggfunc='mean'
+)
+```
+```py
+adr_time_series['City Hotel'].fillna((df[df['hotel'] == 'City Hotel'])['adr'].mean(), inplace=True)
+adr_time_series['Resort Hotel'].fillna((df[df['hotel'] == 'Resort Hotel'])['adr'].mean(), inplace=True)
+```
+```py
+adr_time_series.plot(
+    kind='line',
+    figsize=(18,5),
+    color=['green', 'red']
+)
+plt.legend()
+plt.title('Average Daily Rate Time Series Analysis')
+plt.xlabel('Reservation Status Date')
+plt.ylabel('Average Daily Rate ($)')
+plt.xlim(left=df['reservation_status_date'].min())
+plt.show()
+```
+![alt text](Figs/p3.png)
+
+**Key Insights:**
+- **Resort hotels** exhibit significant **volatility** in their average daily rates, with **pronounced peaks that could correspond to seasonal demand or special events, suggesting a more dynamic pricing strategy**. **In contrast, city hotels maintain relatively more stable rates with fewer fluctuations**.
+
+**
+
+**Key Insights:**
+**Key Insights:**
+**Key Insights:**
