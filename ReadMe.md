@@ -468,10 +468,200 @@ plt.show()
 ![alt text](Figs/p3.png)
 
 **Key Insights:**
-- **Resort hotels** exhibit significant **volatility** in their average daily rates, with **pronounced peaks that could correspond to seasonal demand or special events, suggesting a more dynamic pricing strategy**. **In contrast, city hotels maintain relatively more stable rates with fewer fluctuations**.
+- **Resort hotels** exhibit significant **volatility** in their average daily rates, with **pronounced peaks that could correspond to seasonal demand or special events, suggesting a more dynamic pricing strategy**. **In contrast, city hotels maintain relatively more stable rates with fewer fluctuations.**
 
-**
+### **7.4. Monthly Trends in Hotels Booking Cancellation Rate:**
+```py
+df['month_number'] = df['reservation_status_date'].dt.month
+```
+```py
+months_labels = [
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
+]
+
+ax = cancellation_months_pivot = df.pivot_table(
+    index='month_number',
+    columns='is_canceled',
+    aggfunc='size'
+).plot(
+    kind='bar',
+    color=['red', 'green'],
+    alpha=0.8,
+    edgecolor='black',
+    figsize=(18,5)
+)
+ax.set_xticklabels(labels=months_labels, rotation=0)
+plt.legend(title='')
+plt.title('Cancellation Status Frequency Per Month')
+plt.xlabel('Month')
+plt.ylabel('Frequency')
+plt.show()
+```
+![alt text](Figs/p4.png)
+
 
 **Key Insights:**
+- **January and July** exhibit the highest cancellation rates, suggesting potential issues such as post-holiday fatigue or dissatisfaction with holiday bookings.
+
+- **August** shows the highest number of non-canceled bookings, indicating a peak travel period where customer satisfaction or commitment to travel plans is at its highest. 
+
+- The insights suggest a need for **targeted strategies** to reduce cancellations during peak cancellation months, potentially through **improved customer engagement or more accurate service representation.**
+
+## **7.5. Distribution of Cancellation Orders Across Top 10 Countries in the Dataset:**
+```py
+(df[df['is_canceled'] == 'Canceled']).groupby(
+    by=['month_number']
+).agg(
+    avg_adr=('adr', 'mean')
+)
+```
+```py
+country_cancellation_frec = (df[df['is_canceled'] == 'Canceled']).groupby(
+    by=['country']
+).agg(
+    cancellation_frec=('is_canceled', 'size')
+).sort_values(
+    by=['cancellation_frec'],
+    ascending=False
+).reset_index().head(10)
+```
+```py
+pie_explode = (0.1, 0.2, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+plt.pie(
+    data=country_cancellation_frec,
+    x='cancellation_frec',
+    labels='country',
+    autopct='%1.1f%%',
+    startangle=180,
+    explode=pie_explode
+)
+plt.legend(
+    country_cancellation_frec['country'],
+    title="Countries",
+    loc="center left",
+    bbox_to_anchor=(1, 0.5))
+plt.tight_layout()
+plt.xlabel('Top (10) Countries In Cancellation Orders', size=15)
+plt.show()
+```
+![alt text](Figs/p5.png)
+
 **Key Insights:**
+- **Portugal** accounts for nearly **70%** of the total cancellations. This suggests potential issues specific to the Portuguese market, such as **economic factors, customer dissatisfaction, or targeted marketing strategies that may not align with customer expectations**.
+
+- **The United Kingdom and Spain** also show notable cancellation rates, indicating regional trends that may require further investigation. 
+
+- The relatively lower cancellation rates from countries like **the United States and China** suggest more stable booking behaviors or higher satisfaction rates. These insights point to the need for localized strategies to address the high cancellation rates in key markets like Portugal, the United Kingdom, and Spain.
+
+## **7.6. Analysis of Hotel Booking Order Frequencies Across Different Market Segments:**
+```py
+(df['market_segment'].value_counts(normalize=True) * 100).plot(
+    kind='bar',
+    color='green',
+    edgecolor='black',
+    figsize=(10,4)
+)
+plt.xticks(rotation=0)
+plt.title('Market Segment Vs. Orders Frequency')
+plt.xlabel('Market Segment')
+plt.show()
+```
+![alt text](Figs/p6.png)
+
 **Key Insights:**
+
+- The bar chart reveals that the **Online TA (Travel Agency) marketing segment dominates hotel bookings by a significant margin**, indicating a strong consumer preference for online platforms when reserving hotel accommodations. 
+
+- The **Offline TA/TO (Traditional Travel Agencies/Tour Operators) and Groups segments also contribute notably to the booking frequency**, though to a lesser extent, highlighting the continued relevance of traditional booking methods and group travel. 
+
+- The relatively **low frequency** of bookings in **the Direct, Corporate, Complementary**, and "Aviation" segments suggests either limited engagement for these categories. 
+
+## **7.7. Analysis of Hotel Booking Cancellation Frequencies Across Different Market Segments:**
+
+```py
+((df[df['is_canceled'] == 'Canceled'])['market_segment'].value_counts(normalize=True) * 100).plot(
+    kind='bar',
+    color='red',
+    edgecolor='black',
+    figsize=(10,4)
+)
+plt.xticks(rotation=0)
+plt.title('Market Segment Vs. Cancellation Orders Frequency')
+plt.xlabel('Market Segment')
+plt.show()
+```
+![alt text](Figs/p7.png)
+
+**Key Insights:**
+- The chart shows that most hotel booking cancellations happen through **Online TA (Travel Agency)**, suggesting that people might be having **second thoughts** and **discrepancies between online hotel photos and actual conditions** or facing issues with online bookings. 
+
+- The **Groups** segment also has a lot of cancellations, which might be due to **changes in plans or difficulties in organizing group trips**.
+
+## **7.8. Trends of Average Daily Rates for Canceled and Non-Canceled Hotel Orders Over Time for Resort and City Hotels:**
+
+```py
+(df[df['reservation_status_date'] >= '2015-07-01']).pivot_table(
+    index='reservation_status_date',
+    columns='is_canceled',
+    values='adr',
+    aggfunc='mean'
+).plot(
+    kind='line',
+    figsize=(20,6),
+    color=['crimson', 'lime']
+)
+plt.xlim(left=(df[df['reservation_status_date'] >= '2015-07-01'])['reservation_status_date'].min())
+plt.legend(title='', loc='best')
+plt.xlabel('Reservation Status Date')
+plt.ylabel('Average Daily Rate In ($)')
+plt.title('Average Daily Rate Vs. Reservation Status Date for Canceled and Not Canceled Orders', size=20)
+plt.xticks(rotation=0, ha='center')
+plt.show()
+```
+
+![alt text](Figs/p8.png)
+
+**Key Insights:**
+- Notably, there are periods where **canceled orders (in red) tend to have higher average daily rates compared to non-canceled orders (in green)**, suggesting that **price sensitivity might be a contributing factor to cancellations**.
+
+- Reservations are **canceled** when the average daily rate is higher than when it is not canceled, so **it means the higher prices of the average daily rate lead to a higher level of cancellation**.
+
+- Peaks in the average daily rates for canceled orders could indicate that **customers are more likely to cancel reservations when prices are higher, possibly due to finding better deals elsewhere or reconsidering the value of their booking**. 
+
+## **7.9 Seasonal Variations in Average Daily Rates for City and Resort Hotels:**
+
+```py
+hotel_month_pivot = df.pivot_table(
+    index='month_number',
+    columns='hotel',
+    values='adr',
+    aggfunc='mean'
+)
+
+ax = hotel_month_pivot.plot(
+    kind='line',
+    color=['dodgerblue', 'orange'],
+    figsize=(16,4),
+    marker='o'
+)
+
+ax.set_xticks(range(1,13))
+ax.set_xticklabels(rotation=0, labels=months_labels)
+ax.set_xlabel('Month')
+ax.set_ylabel('Average Daily Rate (ADR)')
+ax.set_title('Monthly Average Daily Rate (ADR) Trends by Hotel')
+ax.grid(True, linestyle='--', alpha=0.6)
+plt.legend(title='')
+plt.show()
+```
+![alt text](Figs/p9.png)
+
+
+For a Resort hotel, the average daily rate is more expensive during July, August, and September, and for City hotel, the average daily rate is more expensive during March, April, and May.
+
+**Key Insights:**
+
+- **Resort Hotels** experience a significant surge in Average Daily Rates (ADR) during the summer months, particularly in **July, August, and September**. In contrast, **City Hotel** exhibit more stable ADR throughout the year, with only slight increases during **March, April, and May**.
+
