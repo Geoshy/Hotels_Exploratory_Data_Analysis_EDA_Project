@@ -1,5 +1,5 @@
 
-# **Uncovering the Drivers Behind Rising Hotel Cancellation Rates: Data Analysis Project**
+# **Uncovering the Drivers Behind Rising Hotel Cancellation Rates: Data Analysis Project:**
 
 ## **(1) Project Roadmap:**
 
