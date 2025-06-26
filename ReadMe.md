@@ -658,10 +658,25 @@ plt.show()
 ```
 ![alt text](Figs/p9.png)
 
-
-For a Resort hotel, the average daily rate is more expensive during July, August, and September, and for City hotel, the average daily rate is more expensive during March, April, and May.
-
 **Key Insights:**
 
 - **Resort Hotels** experience a significant surge in Average Daily Rates (ADR) during the summer months, particularly in **July, August, and September**. In contrast, **City Hotel** exhibit more stable ADR throughout the year, with only slight increases during **March, April, and May**.
+
+# **(6) Recommandations:**
+
+- Investigate and address the root causes of cancellations, particularly in **high-cancellation months like January and July**. Improve post-holiday experiences and **ensure holiday bookings meet customer expectations**.
+
+- Benefit from the peak travel period in **August** by ensuring high customer satisfaction and commitment. For Resort Hotels, prepare for increased demand during the **summer months** with competitive pricing and enhanced service offerings.
+
+- Focus on understanding and addressing the unique needs of the **Portuguese market**, which accounts for a significant portion of cancellations. **Create marketing strategies to better align with customer expectations in Portugal, the United Kingdom, and Spain**.
+
+- Since the**majority of cancellations occur through Online Travel Agencies (OTAs)**, ensure that online booking platforms provide an accurate and realistic description of hotel conditions. Enhance the user experience to minimize discrepancies between expectations and reality.
+
+- Improve **pricing strategies, particularly during peak periods. High average daily rates correlate with increased cancellations**, so consider dynamic pricing models that balance profitability with customer retention.
+
+# **(7) Data Source:**
+
+**📂 Data Source:** [Kaggle: Hotel Bookings Dataset](https://www.kaggle.com/datasets/ahmedsafwatgb20/hotel-bookingscsv)  
+
+
 
