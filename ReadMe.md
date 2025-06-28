@@ -16,18 +16,18 @@ This project aims to identify the key factors contributing to the **increasing r
 2. **Python Programming Language**: Used for overall data manipulation and analysis.
 3. **Pandas Library**: Utilized for data cleaning, manipulation, standardization (normalization), and handling outliers and null values.
 4. **Matplotlib**: Employed for data visualization.
-5. **Seaborn**: Used for statistical data visualization.
-6. **Git & GitHub**: for sharing my analysis and insights.
+5. **Git & GitHub**: for sharing my analysis and insights.
+
+**The Full Python Jupyter Notebook File [here](Jupyter_Files)**.
 
 ## **(4) Data Inspection:**
 ### **4.1. Import Important Libraries and Modules:**
 ```py
 import pandas as pd
-import numpy as np 
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import seaborn as sns
 import datetime as dt
+import warnings
+warnings.filterwarnings('ignore')
 ```
 
 ## **4.2. Export Target Dataframe:**
@@ -282,7 +282,7 @@ def country_normalization(country_column):
 
 df_copy['country'] = df_copy['country'].apply(country_normalization)
 ```
-**5.2.3. Dta Normalization of Column ('is_canceled')**
+**5.2.3. Data Normalization of Column ('is_canceled')**
 ```py
 is_canceled_dictionary = {
     1 : 'Canceled',
@@ -374,7 +374,7 @@ df_copy.to_csv(
 ```
 
 ## **(7) Exploratory Data Analysis (EDA):**
-### **7.1. Hotels Reservation Status Anaysis:**
+### **7.1. Hotels Reservation Status Analysis:**
 ```py
 plt.figure(figsize=(7,5))
 round(df['is_canceled'].value_counts(normalize=True) * 100).plot(
@@ -660,9 +660,9 @@ plt.show()
 
 **Key Insights:**
 
-- **Resort Hotels** experience a significant surge in Average Daily Rates (ADR) during the summer months, particularly in **July, August, and September**. In contrast, **City Hotel** exhibit more stable ADR throughout the year, with only slight increases during **March, April, and May**.
+- **Resort Hotels** experience a significant surge in Average Daily Rates (ADR) during the summer months, particularly in **July, August, and September**. In contrast, **City Hotel** exhibits more stable ADR throughout the year, with only slight increases during **March, April, and May**.
 
-# **(6) Recommandations:**
+# **(6) Recommendations:**
 
 - Investigate and address the root causes of cancellations, particularly in **high-cancellation months like January and July**. Improve post-holiday experiences and **ensure holiday bookings meet customer expectations**.
 
@@ -670,7 +670,7 @@ plt.show()
 
 - Focus on understanding and addressing the unique needs of the **Portuguese market**, which accounts for a significant portion of cancellations. **Create marketing strategies to better align with customer expectations in Portugal, the United Kingdom, and Spain**.
 
-- Since the**majority of cancellations occur through Online Travel Agencies (OTAs)**, ensure that online booking platforms provide an accurate and realistic description of hotel conditions. Enhance the user experience to minimize discrepancies between expectations and reality.
+- Since the **majority of cancellations occur through Online Travel Agencies (OTAs)**, ensure that online booking platforms provide an accurate and realistic description of hotel conditions. Enhance the user experience to minimize discrepancies between expectations and reality.
 
 - Improve **pricing strategies, particularly during peak periods. High average daily rates correlate with increased cancellations**, so consider dynamic pricing models that balance profitability with customer retention.
 
